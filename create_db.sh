@@ -1,0 +1,1 @@
+sqlite3 hotels.db < create_db.sql
