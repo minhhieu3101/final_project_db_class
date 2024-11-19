@@ -46,7 +46,17 @@ def get_guest_list():
     cursor = connection.cursor()
     cursor.execute(""" SELECT * FROM guests """)
     guests = cursor.fetchall()
-    return guests
+    guest_list = []
+    
+    # Create a list of pets with kind information by manually joining
+    for guest in guests:
+        guest_list.append({
+            'id': guest[0],
+            'name': guest[1],
+            'phone_number': guest[2],
+            'email': guest[3],
+        })
+    return guest_list
 
 def delete_guest(id):
     cursor = connection.cursor()

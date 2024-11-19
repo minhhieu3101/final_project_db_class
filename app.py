@@ -8,15 +8,14 @@ app = Flask(__name__)
 @app.route("/list")
 def get_list():
     guests = database.get_guest_list()
-    return render_template("list.html", guests=guests)
+    return render_template("guest_list.html", guests=guests)
 
-@app.route("/create", methods=['GET', 'POST'])
+@app.route("/create_guest", methods=['GET', 'POST'])
 def create_guest():
-    guests = database.create_data('guests', )
-    # if request.method == 'GET':
-    #     kinds = database.retrieve_kinds()
-    #     return render_template("create.html", kinds=kinds)
+    if request.method == "GET":
+        return render_template("create_guest.html")
     
-    data = dict(request.form)
-    guests = database.create_data('guests', data)
-    return redirect(url_for('get_list'))
+    if request.method == "POST":
+        data = dict(request.form)
+        database.create_data('guest', data)
+        return redirect(url_for('create_guest'))
