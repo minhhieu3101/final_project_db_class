@@ -1,0 +1,30 @@
+<html>
+<head>
+    <title>List of guests</title>
+</head>
+<body>
+    <h1>List of guests</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>phone_number</th>
+            <th>email</th>
+        </tr>
+        {% for guest in guests %}
+        <tr>
+            <td>{{ guest['id'] }}</td>
+            <td>{{ guest['name'] }}</td>
+            <td>{{ guest['phone_number'] }}</td>
+            <td>{{ guest['email'] }}</td>
+            <!-- <td>
+                <a href="/delete/{{ pet['id'] }}">Delete</a> |
+                <a href="/update/{{ pet['id'] }}">Update</a>
+            </td> -->
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/create">Add New Pet</a>
+</body>
+</html>
