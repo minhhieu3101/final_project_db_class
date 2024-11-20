@@ -6,14 +6,12 @@
     <h1>List of guests</h1>
     <table border="1">
         <tr>
-            <th>ID</th>
             <th>Name</th>
             <th>phone_number</th>
             <th>email</th>
         </tr>
         {% for guest in guests %}
         <tr>
-            <td>{{ guest['id'] }}</td>
             <td>{{ guest['name'] }}</td>
             <td>{{ guest['phone_number'] }}</td>
             <td>{{ guest['email'] }}</td>
