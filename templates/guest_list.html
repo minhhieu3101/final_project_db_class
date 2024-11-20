@@ -17,6 +17,10 @@
             <td>{{ guest['name'] }}</td>
             <td>{{ guest['phone_number'] }}</td>
             <td>{{ guest['email'] }}</td>
+            <td>
+                <a href="/delete_guest/{{ guest['id'] }}">Delete</a> |
+                <a href="/update_guest/{{ guest['id'] }}">Update</a>
+            </td>
         </tr>
         {% endfor %}
     </table>

@@ -19,3 +19,19 @@ def create_guest():
         data = dict(request.form)
         database.create_data('guest', data)
         return redirect(url_for('create_guest'))
+    
+@app.route("/update_guest/<id>", methods=['GET', 'POST'])
+def update_guest(id):
+    if request.method == "GET":
+        guest = database.get_guest(id)
+        return render_template("update_guest.html", guest = guest)
+    
+    if request.method == "POST":
+        data = dict(request.form)
+        database.update_guest(id, data)
+        return redirect(url_for('update_guest'))
+    
+@app.route("/delete_guest/<id>")
+def delete_guest(id):
+    database.delete_guest(id)
+    return redirect(url_for('get_list'))

@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+    <title>Update Guest</title>
+</head>
+<body>
+    <h1>Update Guest</h1>
+    <form action="/update/{{ guest[0] }}" method="POST">
+        <p>Name: <input name="name" value="{{ guest[1] }}" required /></p>
+        <p>Phone_number: <input name="phone_number" value="{{ guest[2] }}" required /></p>
+        <p>Email: <input name="email" value="{{ guest[3] }}" required /></p>
+        <button type="submit">Update</button>
+    </form>
+    <br>
+    <a href="/list">Back to Guest List</a>
+</body>
+</html>

@@ -6,11 +6,17 @@ connection.execute("PRAGMA foreign_keys = 1")
 def create_data(table, data):
     cursor = connection.cursor()
     if table == 'guest':
+        guests = cursor.execute("SELECT * FROM guests where phone_number = ? or email = ?", (data["phone_number"], data["email"]))
+        if guests is not None:
+            raise ValueError('This data is exist')
         cursor.execute("""
             INSERT INTO guests (name, phone_number, email) 
             VALUES (?, ?, ?)
         """, (data["name"], data["phone_number"], data["email"]))
     elif table == 'room':
+        rooms = cursor.execute("SELECT * FROM rooms where name = ?", (data["name"]))
+        if rooms is not None:
+            raise ValueError('Room name is exist')
         if data['room_type'] == 'Single':
             data['price'] = 50
         elif data['room_type'] == 'Twin':
@@ -30,7 +36,7 @@ def create_data(table, data):
         guest = cursor.execute("SELECT * FROM guests WHERE id = ?", (int(data["guest_id"]),))
         if room.status == 'Unavailable':
             raise ValueError('Room is unavailable, please select another room')
-        elif guest is None:
+        if guest is None:
             raise ValueError('Guest is not found')
         cursor.execute("""
             INSERT INTO guest_rooms (guest_id, room_id, check_in_time, check_out_time, total_price) 
@@ -41,6 +47,10 @@ def create_data(table, data):
     connection.commit()
 
 #guest_table
+def get_guest(id):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM guests where id = ?", (id,))
+    return cursor.fetchone()
 
 def get_guest_list():
     cursor = connection.cursor()
