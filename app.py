@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import database
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -17,6 +18,8 @@ def create_guest():
     
     if request.method == "POST":
         data = dict(request.form)
+        if database.check_user_exist(data["phone_number"], data["email"]) is True:
+            raise ValueError('User is existed')
         database.create_data('guest', data)
         return redirect(url_for('get_list'))
     
@@ -76,4 +79,27 @@ def update_room(id):
 @app.route("/delete_room/<id>")
 def delete_room(id):
     database.delete_room(id)
+    return redirect(url_for('get_room_list'))
+
+@app.route("/book_room", methods=['POST'])
+def book_room():
+    data = dict(request.form)
+    print(data)
+    room = database.get_room_by_number(data["room_number"])
+    guest = database.get_guest_by_phone_number(data["phone_number"])
+    if len(room) == 0 or room.status == 'Unavailable':
+        raise ValueError('Room is unavailable, please select another room')
+    if len(guest) == 0:
+        raise ValueError('Guest is not found')
+    data["guest_id"] = guest["id"]
+    data["room_id"] = room["id"]
+    format_str = "%Y-%m-%dT%H:%M"
+    datetime1 = datetime.strptime(data['check_in_date'], format_str)
+    datetime2 = datetime.strptime(data["check_out_date"], format_str)
+    time_difference = datetime2 - datetime1
+    hours_difference = time_difference.total_seconds() / 3600
+    print(hours_difference)
+    data["total_price"] = room["price"] * hours_difference
+    database.create_data('guest_room', data)
+    room["status"] = 'Unavailable'
     return redirect(url_for('get_room_list'))

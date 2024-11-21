@@ -3,18 +3,15 @@ import sqlite3
 connection = sqlite3.connect("hotels.db", check_same_thread=False)
 connection.execute("PRAGMA foreign_keys = 1")
 
+
 def create_data(table, data):
     cursor = connection.cursor()
     if table == 'guest':
-        guests = cursor.execute("SELECT * FROM guests where phone_number = ? or email = ?", (data["phone_number"], data["email"])).fetchall()
-        if len(guests) != 0:
-            raise ValueError('This data is exist')
         cursor.execute("""
             INSERT INTO guests (name, phone_number, email) 
             VALUES (?, ?, ?)
         """, (data["name"], data["phone_number"], data["email"]))
     elif table == 'room':
-        print(data["room_number"])
         rooms = cursor.execute("SELECT * FROM rooms where room_number = ?", (data["room_number"])).fetchall()
         if len(rooms) != 0:
             raise ValueError('Room name is exist')
@@ -33,16 +30,10 @@ def create_data(table, data):
             VALUES (?, ?, ?, ?)
         """, (data["room_number"], data["room_type"], data["price"], data["status"]))
     elif table == 'guest_room':
-        room = cursor.execute("SELECT * FROM rooms WHERE id = ?", (int(data["room_id"]),)).fetchone()
-        guest = cursor.execute("SELECT * FROM guests WHERE id = ?", (int(data["guest_id"]),)).fetchall()
-        if room.status == 'Unavailable':
-            raise ValueError('Room is unavailable, please select another room')
-        if len(guest) == 0:
-            raise ValueError('Guest is not found')
         cursor.execute("""
             INSERT INTO guest_rooms (guest_id, room_id, check_in_time, check_out_time, total_price) 
             VALUES (?, ?, ?, ?, ?)
-        """, (data["guest_id"], data["room_id"], data["check_in_time"], data["check_out_time"], int(data["total_price"])))
+        """, (data["guest_id"], data["room_id"], data["check_in_date"], data["check_out_date"], int(data["total_price"])))
     else:
         raise ValueError('Can not add')
     connection.commit()
@@ -52,12 +43,32 @@ def get_guest(id):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM guests where id = ?", (id,))
     guest =  cursor.fetchone()
+    if guest is None:
+        raise ValueError('Guest is not found')
     return {
         'id': guest[0],
         'name': guest[1],
         'phone_number': guest[2],
         'email': guest[3],
     }
+
+def get_guest_by_phone_number(phone_number):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM guests where phone_number = ?", (phone_number,))
+    guest =  cursor.fetchone()
+    if guest is None:
+        raise ValueError('Guest is not found')
+    return {
+        'id': guest[0],
+        'name': guest[1],
+        'phone_number': guest[2],
+        'email': guest[3],
+    }
+
+def check_user_exist(phone_number, email):
+    cursor = connection.cursor()
+    guests = cursor.execute("SELECT * FROM guests where phone_number = ? or email = ?", (phone_number, email)).fetchall()
+    return True if len(guests) != 0 else False
 
 def get_guest_list():
     cursor = connection.cursor()
@@ -95,6 +106,18 @@ def update_guest(id, data):
 def get_room(id):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM rooms where id = ?", (id,))
+    room =  cursor.fetchone()
+    return {
+        'id': room[0],
+        'room_number': room[1],
+        'room_type': room[2],
+        'price': room[3],
+        'status': room[4]
+    }
+
+def get_room_by_number(room_number):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM rooms where room_number = ?", (room_number,))
     room =  cursor.fetchone()
     return {
         'id': room[0],

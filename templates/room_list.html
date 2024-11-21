@@ -1,30 +1,119 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>List of rooms</title>
+    <title>Main Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        header {
+            margin-bottom: 20px;
+        }
+        #booking-form {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        #booking-form h2 {
+            margin-top: 0;
+        }
+        #booking-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        #booking-form input, #booking-form select, #booking-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        #booking-form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #booking-form button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        a {
+            color: blue;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>List of rooms</h1>
-    <table border="1">
-        <tr>
-            <th>Number</th>
-            <th>Type</th>
-            <th>Price</th>
-            <th>Status</th>
-        </tr>
-        {% for room in rooms %}
-        <tr>
-            <td>{{ room['room_number'] }}</td>
-            <td>{{ room['room_type'] }}</td>
-            <td>{{ room['price'] }}</td>
-            <td>{{ room['status'] }}</td>
-            <td>
-                <a href="/delete_room/{{ room['id'] }}">Delete</a> |
-                <a href="/update_room/{{ room['id'] }}">Update</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br>
-    <a href="/create_room">Add New Room</a>
+    <header>
+        <h1>Main Page</h1>
+    </header>
+
+    <!-- Booking Form -->
+    <div id="booking-form">
+        <h2>Book a Room</h2>
+        <form method="POST" action="/book_room">
+            <label for="phone_number">Your Phone Number</label>
+            <input type="text" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
+            
+            <label for="room-number">Room Number</label>
+            <select id="room-number" name="room_number" required>
+                {% for room in rooms: %}
+                <option value="{{ room['room_number'] }}">{{ room['room_number'] }} - {{ room['room_type'] }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="check-in">Check-in Date</label>
+            <input type="datetime-local" id="check-in" name="check_in_date" required>
+
+            <label for="check-out">Check-out Date</label>
+            <input type="datetime-local" id="check-out" name="check_out_date" required>
+
+            <button type="submit">Book Now</button>
+        </form>
+    </div>
+
+    <!-- List of Rooms -->
+    <section>
+        <h2>List of Rooms</h2>
+        <table>
+            <tr>
+                <th>Number</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            {% for room in rooms %}
+            <tr>
+                <td>{{ room['room_number'] }}</td>
+                <td>{{ room['room_type'] }}</td>
+                <td>{{ room['price'] }}</td>
+                <td>{{ room['status'] }}</td>
+                <td>
+                    <a href="/delete_room/{{ room['id'] }}">Delete</a> |
+                    <a href="/update_room/{{ room['id'] }}">Update</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <a href="/create_room">Add New Room</a>
+    </section>
 </body>
 </html>
