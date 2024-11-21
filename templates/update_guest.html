@@ -5,10 +5,10 @@
 </head>
 <body>
     <h1>Update Guest</h1>
-    <form action="/update_guest/{{ guest[0] }}" method="POST">
-        <p>Name: <input name="name" value="{{ guest[1] }}" required /></p>
-        <p>Phone_number: <input name="phone_number" value="{{ guest[2] }}" required /></p>
-        <p>Email: <input name="email" value="{{ guest[3] }}" required /></p>
+    <form action="/update_guest/{{ guest['id'] }}" method="POST">
+        <p>Name: <input name="name" value="{{ guest['name'] }}" required /></p>
+        <p>Phone_number: <input name="phone_number" value="{{ guest['phone_number'] }}" required /></p>
+        <p>Email: <input name="email" value="{{ guest['email'] }}" required /></p>
         <button type="submit">Update</button>
     </form>
     <br>

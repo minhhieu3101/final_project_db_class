@@ -17,6 +17,10 @@
             <td>{{ room['room_type'] }}</td>
             <td>{{ room['price'] }}</td>
             <td>{{ room['status'] }}</td>
+            <td>
+                <a href="/delete_room/{{ room['id'] }}">Delete</a> |
+                <a href="/update_room/{{ room['id'] }}">Update</a>
+            </td>
         </tr>
         {% endfor %}
     </table>

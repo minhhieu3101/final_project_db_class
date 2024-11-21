@@ -50,3 +50,30 @@ def create_room():
         data = dict(request.form)
         database.create_data('room', data)
         return redirect(url_for('get_room_list'))
+
+@app.route("/update_room/<id>", methods=['GET', 'POST'])
+def update_room(id):
+    room = database.get_room(id)
+    if request.method == "GET":
+        return render_template("update_room.html", room = room)
+    
+    if request.method == "POST":
+        data = dict(request.form)
+        if room["room_type"] != data["room_type"]:
+            if data['room_type'] == 'Single':
+                data['price'] = 50
+            elif data['room_type'] == 'Twin':
+                data['price'] = 100
+            elif data['room_type'] == 'Double':
+                data['price'] = 120
+            elif data['room_type'] == 'Triple':
+                data['price'] = 150
+            else:
+                raise ValueError('Room type is undefined')
+        database.update_room(id, data)
+        return redirect(url_for('get_room_list'))
+    
+@app.route("/delete_room/<id>")
+def delete_room(id):
+    database.delete_room(id)
+    return redirect(url_for('get_room_list'))

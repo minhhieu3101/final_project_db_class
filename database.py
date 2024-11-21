@@ -51,7 +51,13 @@ def create_data(table, data):
 def get_guest(id):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM guests where id = ?", (id,))
-    return cursor.fetchone()
+    guest =  cursor.fetchone()
+    return {
+        'id': guest[0],
+        'name': guest[1],
+        'phone_number': guest[2],
+        'email': guest[3],
+    }
 
 def get_guest_list():
     cursor = connection.cursor()
@@ -89,7 +95,14 @@ def update_guest(id, data):
 def get_room(id):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM rooms where id = ?", (id,))
-    return cursor.fetchone()
+    room =  cursor.fetchone()
+    return {
+        'id': room[0],
+        'room_number': room[1],
+        'room_type': room[2],
+        'price': room[3],
+        'status': room[4]
+    }
 
 def get_room_list():
     cursor = connection.cursor()
@@ -107,3 +120,26 @@ def get_room_list():
             'status': room[4]
         })
     return room_list
+
+def update_room(id, data):
+    cursor = connection.cursor()
+    id = int(id)
+    if "price" in data:
+        cursor.execute("""
+            UPDATE rooms 
+            SET room_number=?, room_type=?, price=?, status=?
+            WHERE id=?
+        """, (data["room_number"], data["room_type"], data["price"], data["status"],id))
+    else:
+        cursor.execute("""
+            UPDATE rooms 
+            SET room_number=?, room_type=?, status=?
+            WHERE id=?
+        """, (data["room_number"], data["room_type"], data["status"],id))
+    connection.commit()
+
+def delete_room(id):
+    cursor = connection.cursor()
+    id = int(id)
+    cursor.execute("DELETE FROM rooms WHERE id = ?", (id,))
+    connection.commit()

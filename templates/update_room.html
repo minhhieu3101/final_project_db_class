@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+    <title>Update room</title>
+</head>
+<body>
+    <h1>Update room</h1>
+    <form action="/update_room/{{ room['id'] }}" method="POST">
+        <p>Name: <input name="room_number" value="{{ room['room_number'] }}" required /></p>
+        <p>Room Type: <input list="room_types" name="room_type" id="room_type" placeholder="{{ room['room_type'] }}" required>
+            <datalist id="room_types">
+                <option value="Single">
+                <option value="Twin">
+                <option value="Double">
+                <option value="Triple">
+            </datalist>
+        <p>Status: <input list="status_list" name="status" id="status" placeholder="{{ room['status'] }}" required>
+            <datalist id="status_list">
+                <option value="Available">
+                <option value="Unavailable">
+            </datalist>
+        <button type="submit">Update</button>
+    </form>
+    <br>
+    <a href="/room_list">Back to Room List</a>
+</body>
+</html>
