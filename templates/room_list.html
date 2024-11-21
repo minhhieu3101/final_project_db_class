@@ -13,18 +13,14 @@
         </tr>
         {% for room in rooms %}
         <tr>
-            <td>{{ room['room_name'] }}</td>
+            <td>{{ room['room_number'] }}</td>
             <td>{{ room['room_type'] }}</td>
             <td>{{ room['price'] }}</td>
             <td>{{ room['status'] }}</td>
-            <!-- <td>
-                <a href="/delete_guest/{{ guest['id'] }}">Delete</a> |
-                <a href="/update_guest/{{ guest['id'] }}">Update</a>
-            </td> -->
         </tr>
         {% endfor %}
     </table>
     <br>
-    <!-- <a href="/create_room">Add New Room</a> -->
+    <a href="/create_room">Add New Room</a>
 </body>
 </html>

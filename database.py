@@ -14,7 +14,8 @@ def create_data(table, data):
             VALUES (?, ?, ?)
         """, (data["name"], data["phone_number"], data["email"]))
     elif table == 'room':
-        rooms = cursor.execute("SELECT * FROM rooms where name = ?", (data["name"])).fetchall()
+        print(data["room_number"])
+        rooms = cursor.execute("SELECT * FROM rooms where room_number = ?", (data["room_number"])).fetchall()
         if len(rooms) != 0:
             raise ValueError('Room name is exist')
         if data['room_type'] == 'Single':
@@ -28,9 +29,9 @@ def create_data(table, data):
         else:
             raise ValueError('Room type is undefined')
         cursor.execute("""
-            INSERT INTO rooms (name, room_type, price) 
-            VALUES (?, ?, ?)
-        """, (data["name"], data["room_type"], data["price"]))
+            INSERT INTO rooms (room_number, room_type, price, status) 
+            VALUES (?, ?, ?, ?)
+        """, (data["room_number"], data["room_type"], data["price"], data["status"]))
     elif table == 'guest_room':
         room = cursor.execute("SELECT * FROM rooms WHERE id = ?", (int(data["room_id"]),)).fetchone()
         guest = cursor.execute("SELECT * FROM guests WHERE id = ?", (int(data["guest_id"]),)).fetchall()
