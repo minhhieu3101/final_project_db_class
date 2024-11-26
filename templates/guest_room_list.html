@@ -1,17 +1,78 @@
+<!DOCTYPE html>
 <html>
 <head>
-    <title>List of Booking</title>
+    <title>List of Bookings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        header {
+            margin-bottom: 20px;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        a {
+            color: blue;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>List of Booking</h1>
-    <table border="1" style="text-align: center;">
+    <div class="navbar">
+        <a href="/">Main</a>
+        <a href="/room_list">Room</a>
+        <a href="/guest_room_list">Booking Records</a>
+    </div>
+    
+    <header>
+        <h1>List of Bookings</h1>
+    </header>
+    <table>
         <tr>
             <th>Name</th>
-            <th>Phone_number</th>
-            <th>Room_number</th>
-            <th>check_in_time</th>
-            <th>check_out_time</th>
-            <th>total_price</th>
+            <th>Phone Number</th>
+            <th>Room Number</th>
+            <th>Check-in Time</th>
+            <th>Check-out Time</th>
+            <th>Total Price</th>
         </tr>
         {% for guest_room in guest_rooms %}
         <tr>
