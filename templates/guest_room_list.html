@@ -1,0 +1,28 @@
+<html>
+<head>
+    <title>List of Booking</title>
+</head>
+<body>
+    <h1>List of Booking</h1>
+    <table border="1" style="text-align: center;">
+        <tr>
+            <th>Name</th>
+            <th>Phone_number</th>
+            <th>Room_number</th>
+            <th>check_in_time</th>
+            <th>check_out_time</th>
+            <th>total_price</th>
+        </tr>
+        {% for guest_room in guest_rooms %}
+        <tr>
+            <td>{{ guest_room['guest_name'] }}</td>
+            <td>{{ guest_room['phone_number'] }}</td>
+            <td>{{ guest_room['room_number'] }}</td>
+            <td>{{ guest_room['check_in_time'] }}</td>
+            <td>{{ guest_room['check_out_time'] }}</td>
+            <td>{{ guest_room['total_price'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

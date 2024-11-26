@@ -161,8 +161,43 @@ def update_room(id, data):
         """, (data["room_number"], data["room_type"], data["status"],id))
     connection.commit()
 
+def update_room_status(id, status):
+    cursor = connection.cursor()
+    id = int(id)
+    cursor.execute("""
+        UPDATE rooms 
+        SET status=?
+        WHERE id=?
+    """, (status,id))
+    connection.commit()
+
 def delete_room(id):
     cursor = connection.cursor()
     id = int(id)
     cursor.execute("DELETE FROM rooms WHERE id = ?", (id,))
     connection.commit()
+
+#guest_rooms
+def get_guest_room_list():
+    cursor = connection.cursor()
+    cursor.execute(""" 
+                   SELECT gr.id, g.name, g.phone_number, r.room_number, gr.check_in_time, gr.check_out_time, gr.total_price
+                   FROM guest_rooms as gr 
+                   JOIN guests as g on gr.guest_id = g.id
+                   JOIN rooms as r on gr.room_id = r.id
+                   """)
+    rooms = cursor.fetchall()
+    room_list = []
+    
+    # Create a list of pets with kind information by manually joining
+    for room in rooms:
+        room_list.append({
+            'id': room[0],
+            'guest_name': room[1],
+            'phone_number': room[2],
+            'room_number': room[3],
+            'check_in_time': room[4],
+            'check_out_time': room[5],
+            'total_price' : room[6]
+        })
+    return room_list

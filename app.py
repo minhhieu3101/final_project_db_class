@@ -87,7 +87,7 @@ def book_room():
     print(data)
     room = database.get_room_by_number(data["room_number"])
     guest = database.get_guest_by_phone_number(data["phone_number"])
-    if len(room) == 0 or room.status == 'Unavailable':
+    if len(room) == 0 or room["status"] == 'Unavailable':
         raise ValueError('Room is unavailable, please select another room')
     if len(guest) == 0:
         raise ValueError('Guest is not found')
@@ -101,5 +101,10 @@ def book_room():
     print(hours_difference)
     data["total_price"] = room["price"] * hours_difference
     database.create_data('guest_room', data)
-    room["status"] = 'Unavailable'
+    database.update_room_status(room["id"], 'Unavailable')
     return redirect(url_for('get_room_list'))
+
+@app.route("/guest_room_list", methods=['GET'])
+def get_guest_room_list():
+    guest_room = database.get_guest_room_list()
+    return render_template("guest_room_list.html", guest_rooms=guest_room)
