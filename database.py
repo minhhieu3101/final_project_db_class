@@ -115,6 +115,23 @@ def get_room(id):
         'status': room[4]
     }
 
+def get_unavailable_rooms():
+    cursor = connection.cursor()
+    cursor.execute(""" SELECT * FROM rooms where status = 'Unavailable' """)
+    rooms = cursor.fetchall()
+    room_list = []
+    
+    # Create a list of pets with kind information by manually joining
+    for room in rooms:
+        room_list.append({
+            'id': room[0],
+            'room_number': room[1],
+            'room_type': room[2],
+            'price': room[3],
+            'status': room[4]
+        })
+    return room_list
+
 def get_room_by_number(room_number):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM rooms where room_number = ?", (room_number,))
@@ -186,18 +203,43 @@ def get_guest_room_list():
                    JOIN guests as g on gr.guest_id = g.id
                    JOIN rooms as r on gr.room_id = r.id
                    """)
-    rooms = cursor.fetchall()
-    room_list = []
+    guest_rooms = cursor.fetchall()
+    guest_room_list = []
     
     # Create a list of pets with kind information by manually joining
-    for room in rooms:
-        room_list.append({
-            'id': room[0],
-            'guest_name': room[1],
-            'phone_number': room[2],
-            'room_number': room[3],
-            'check_in_time': room[4],
-            'check_out_time': room[5],
-            'total_price' : room[6]
+    for guest_room in guest_rooms:
+        guest_room_list.append({
+            'id': guest_room[0],
+            'guest_name': guest_room[1],
+            'phone_number': guest_room[2],
+            'room_number': guest_room[3],
+            'check_in_time': guest_room[4],
+            'check_out_time': guest_room[5],
+            'total_price' : guest_room[6]
         })
-    return room_list
+    return guest_room_list
+
+def get_guest_room(id):
+    cursor = connection.cursor()
+    cursor.execute(""" 
+                   SELECT gr.id, g.id, r.id, gr.check_in_time, gr.check_out_time, gr.total_price
+                   FROM guest_rooms as gr 
+                   JOIN guests as g on gr.guest_id = g.id
+                   JOIN rooms as r on gr.room_id = r.id
+                   where gr.id = ?
+                   """,(id,))
+    guest_room = cursor.fetchone()
+    return{
+            'id': guest_room[0],
+            'guest_id': guest_room[1],
+            'room_id': guest_room[2],
+            'check_in_time': guest_room[3],
+            'check_out_time': guest_room[4],
+            'total_price' : guest_room[5]
+        }
+
+def delete_guest_rooms(id):
+    cursor = connection.cursor()
+    id = int(id)
+    cursor.execute("DELETE FROM guest_rooms WHERE id = ?", (id,))
+    connection.commit()

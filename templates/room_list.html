@@ -79,7 +79,7 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="/">Main</a>
+        <a href="/guest_list">Guests</a>
         <a href="/room_list">Room</a>
         <a href="/guest_room_list">Booking Records</a>
     </div>
@@ -121,8 +121,10 @@
             
             <label for="room-number">Room Number</label>
             <select id="room-number" name="room_number" required>
-                {% for room in rooms: %}
-                <option value="{{ room['room_number'] }}">{{ room['room_number'] }} - {{ room['room_type'] }}</option>
+                {% for room in rooms %}
+                    {% if room.status == 'Available' %}
+                        <option value="{{ room['room_number'] }}">{{ room['room_number'] }} - {{ room['room_type'] }}</option>
+                    {% endif %}
                 {% endfor %}
             </select>
 

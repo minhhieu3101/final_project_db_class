@@ -57,7 +57,7 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="/">Main</a>
+        <a href="/guest_list">Guests</a>
         <a href="/room_list">Room</a>
         <a href="/guest_room_list">Booking Records</a>
     </div>
@@ -73,6 +73,7 @@
             <th>Check-in Time</th>
             <th>Check-out Time</th>
             <th>Total Price</th>
+            <th>Actions</th>
         </tr>
         {% for guest_room in guest_rooms %}
         <tr>
@@ -82,6 +83,9 @@
             <td>{{ guest_room['check_in_time'] }}</td>
             <td>{{ guest_room['check_out_time'] }}</td>
             <td>{{ guest_room['total_price'] }}</td>
+            <td>
+                <a href="/delete_guest_room/{{ guest_room['id'] }}">Delete</a> |
+            </td>
         </tr>
         {% endfor %}
     </table>

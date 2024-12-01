@@ -1,12 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for
 import database
-from datetime import datetime
+from datetime import datetime, timezone
+from flask_apscheduler import APScheduler
 
 app = Flask(__name__)
 
+class Config:
+    SCHEDULER_API_ENABLED = True  # Enable scheduler API
+
+app.config.from_object(Config)
+scheduler = APScheduler()
+scheduler.init_app(app)
+
 # List of guests,
-@app.route("/")
-@app.route("/list")
+@app.route("/guest_list")
 def get_list():
     guests = database.get_guest_list()
     return render_template("guest_list.html", guests=guests)
@@ -39,6 +46,7 @@ def delete_guest(id):
     database.delete_guest(id)
     return redirect(url_for('get_list'))
 
+@app.route("/")
 @app.route("/room_list")
 def get_room_list():
     rooms = database.get_room_list()
@@ -84,7 +92,6 @@ def delete_room(id):
 @app.route("/book_room", methods=['POST'])
 def book_room():
     data = dict(request.form)
-    print(data)
     room = database.get_room_by_number(data["room_number"])
     guest = database.get_guest_by_phone_number(data["phone_number"])
     if len(room) == 0 or room["status"] == 'Unavailable':
@@ -98,7 +105,6 @@ def book_room():
     datetime2 = datetime.strptime(data["check_out_date"], format_str)
     time_difference = datetime2 - datetime1
     hours_difference = time_difference.total_seconds() / 3600
-    print(hours_difference)
     data["total_price"] = room["price"] * hours_difference
     database.create_data('guest_room', data)
     database.update_room_status(room["id"], 'Unavailable')
@@ -108,3 +114,33 @@ def book_room():
 def get_guest_room_list():
     guest_room = database.get_guest_room_list()
     return render_template("guest_room_list.html", guest_rooms=guest_room)
+
+@app.route("/delete_guest_room/<id>")
+def delete_guest_room(id):
+    record = database.get_guest_room(id)
+    print(record)
+    database.update_room_status(record["room_id"], 'Available')
+    database.delete_guest_rooms(id)
+    return redirect(url_for('get_guest_room_list'))
+
+def update_room_and_booking_records():
+    booking_records = database.get_guest_room_list()
+    if len(booking_records) == 0:
+        return
+    for record in booking_records:
+        if record["check_out_time"] < datetime.today().strftime("%Y-%m-%dT%H:%M"):
+            room = database.get_room_by_number(record["room_number"])
+            database.update_room_status(room["id"], 'Available')
+            database.delete_guest_rooms(record["id"])
+
+scheduler.add_job(
+    id='daily_task',
+    func=update_room_and_booking_records,
+    trigger='interval',
+    minutes=5,
+)
+
+scheduler.start()
+
+if __name__ == '__main__':
+    app.run(debug=True, use_reloader=False)  # Disable reloader to prevent APScheduler issues
